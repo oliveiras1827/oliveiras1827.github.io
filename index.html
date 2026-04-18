@@ -518,4 +518,311 @@
             <div class="alert-title">&#9658; RESUMO EXECUTIVO</div>
             <p style="color:var(--text-dim);font-size:14px;margin:0;">
                 Implementa&#231;&#227;o de controles de seguran&#231;a defensiva em ambientes corporativos Windows,
-                integrando <strong>endure
+                integrando <strong>endurecimento de Active Directory</strong> com processos de
+                <strong>Governan&#231;a de Identidades (IGA)</strong>.
+                Objetivo: mitigar vetores cr&#237;ticos como Pass-the-Hash, movimenta&#231;&#227;o lateral
+                e escalada de privil&#233;gios at&#233; o controlador de dom&#237;nio.
+            </p>
+        </div>
+
+        <p class="sub-heading">An&#225;lise de Impacto (BIA)</p>
+
+        <div class="alert alert-red">
+            <div class="alert-title">&#9888; CENA&#769;RIO SEM CONTROLES</div>
+            <ul>
+                <li><strong>Ransomware via SMBv1:</strong> propaga&#231;&#227;o lateral descontrolada pode paralisar toda a produ&#231;&#227;o. Em ambientes industriais, o custo de downtime pode ultrapassar R$100&nbsp;mil/hora.</li>
+                <li><strong>Contas &#211;rf&#227;s (LGPD Art.&nbsp;6&#176;):</strong> ex-colaboradores com acesso ativo violam o princ&#237;pio de necessidade e abrem vetores de acesso privilegiado n&#227;o monitorados.</li>
+                <li><strong>Aus&#234;ncia de Tiered Model:</strong> comprometimento de uma esta&#231;&#227;o comum (Tier 2) pode escalar diretamente para o controlador de dom&#237;nio (Tier 0) via roubo de credenciais em mem&#243;ria.</li>
+                <li><strong>NTLM/LLMNR habilitados:</strong> facilitam ataques de relay e poisoning em redes internas sem segmenta&#231;&#227;o.</li>
+            </ul>
+        </div>
+
+        <div class="alert alert-green">
+            <div class="alert-title">&#10003; VALOR DE NEG&#211;CIO COM CONTROLES</div>
+            <ul>
+                <li><strong>Conten&#231;&#227;o de incidentes:</strong> segmenta&#231;&#227;o por tiers limita o blast radius &#8212; comprometimento de Tier 2 n&#227;o alcança Tier 0.</li>
+                <li><strong>Conformidade LGPD:</strong> processos automatizados de Leaver garantem desativa&#231;&#227;o imediata com trilha de auditoria completa.</li>
+                <li><strong>ROI mensur&#225;vel:</strong> redu&#231;&#227;o estimada de 80% no tempo de auditoria manual via automa&#231;&#227;o PowerShell.</li>
+                <li><strong>Postura proativa:</strong> logs avan&#231;ados permitem detec&#231;&#227;o de Brute Force e Kerberoasting antes da escalada de privil&#233;gio.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ═══ 02 — TÉCNICO ═══ -->
+    <section id="tecnico" class="fade-in">
+        <div class="section-label">
+            <span class="num">02</span>
+            <h2>Arquitetura T&#233;cnica</h2>
+        </div>
+
+        <!-- TIERED MODEL -->
+        <p class="sub-heading">Microsoft Tiered Administration Model</p>
+        <div class="tier-model">
+            <div class="tier tier-0">
+                <div class="tier-badge">TIER 0<br><span style="font-size:9px;color:var(--text-muted);font-weight:400;">CR&#205;TICO</span></div>
+                <div class="tier-content">
+                    <h4>Domain Controllers &amp; PKI</h4>
+                    <p>Contas isoladas, PAW dedicada, sem acesso &#224; internet. Admins com MFA obrigat&#243;rio e credencial ef&#234;mera.</p>
+                </div>
+                <span class="tier-risk">M&#193;XIMA PROTE&#199;&#195;O</span>
+            </div>
+            <div class="tier tier-1">
+                <div class="tier-badge">TIER 1<br><span style="font-size:9px;color:var(--text-muted);font-weight:400;">ALTO</span></div>
+                <div class="tier-content">
+                    <h4>Servidores de Aplica&#231;&#227;o &amp; Banco</h4>
+                    <p>Contas separadas por servidor, sem login interativo de Tier 0. JIT Access para manuten&#231;&#227;o.</p>
+                </div>
+                <span class="tier-risk">ALTA PROTE&#199;&#195;O</span>
+            </div>
+            <div class="tier tier-2">
+                <div class="tier-badge">TIER 2<br><span style="font-size:9px;color:var(--text-muted);font-weight:400;">PADR&#195;O</span></div>
+                <div class="tier-content">
+                    <h4>Esta&#231;&#245;es de Trabalho &amp; Usu&#225;rios Finais</h4>
+                    <p>RBAC por fun&#231;&#227;o, sem privil&#233;gio administrativo local desnecess&#225;rio. EDR instalado.</p>
+                </div>
+                <span class="tier-risk">MONITORAMENTO</span>
+            </div>
+        </div>
+
+        <!-- THREAT MATRIX -->
+        <p class="sub-heading">Amea&#231;as Mapeadas &#8212; MITRE ATT&amp;CK</p>
+        <div class="matrix">
+            <div class="matrix-header">
+                <span>T&#201;CNICA</span>
+                <span>SEVERIDADE</span>
+                <span>MITRE ID</span>
+                <span>CONTROLE APLICADO</span>
+            </div>
+            <div class="matrix-row">
+                <span>Pass-the-Hash</span>
+                <span><span class="severity sev-critical">CRITICAL</span></span>
+                <span class="mitre-id">T1550.002</span>
+                <span>Tiered Model + Restricted Admin</span>
+            </div>
+            <div class="matrix-row">
+                <span>LLMNR/NBT-NS Poisoning</span>
+                <span><span class="severity sev-critical">CRITICAL</span></span>
+                <span class="mitre-id">T1557.001</span>
+                <span>GPO: desativar LLMNR e NetBIOS</span>
+            </div>
+            <div class="matrix-row">
+                <span>Kerberoasting</span>
+                <span><span class="severity sev-high">HIGH</span></span>
+                <span class="mitre-id">T1558.003</span>
+                <span>gMSA + senhas longas em SPN</span>
+            </div>
+            <div class="matrix-row">
+                <span>DCSync</span>
+                <span><span class="severity sev-critical">CRITICAL</span></span>
+                <span class="mitre-id">T1003.006</span>
+                <span>Auditoria DS-Replication-Get-Changes</span>
+            </div>
+            <div class="matrix-row">
+                <span>Conta &#211;rf&#227; / Valid Accounts</span>
+                <span><span class="severity sev-high">HIGH</span></span>
+                <span class="mitre-id">T1078.002</span>
+                <span>IGA: processo Leaver automatizado</span>
+            </div>
+            <div class="matrix-row">
+                <span>Brute Force SMB/RDP</span>
+                <span><span class="severity sev-medium">MEDIUM</span></span>
+                <span class="mitre-id">T1110.001</span>
+                <span>Fine-Grained Password Policy + Logs</span>
+            </div>
+        </div>
+
+        <!-- SCRIPT — AUDITORIA IAM -->
+        <p class="sub-heading">Automa&#231;&#227;o &#8212; Auditoria IAM</p>
+        <div class="code-wrap">
+            <div class="code-header">
+                <div class="code-dots" aria-hidden="true">
+                    <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+                </div>
+                <span class="code-filename">Invoke-IAMAudit.ps1</span>
+                <span class="code-lang">PowerShell</span>
+            </div>
+            <div class="code-body"><pre><span class="cm">&lt;#
+  Autor  : Vinicius Oliveira Lima
+  Vers&#227;o : 2.0  |  Requer: PS 5.1+, RSAT AD DS, Admin
+#&gt;</span>
+<span class="kw">#Requires</span> -RunAsAdministrator
+<span class="kw">#Requires</span> -Modules ActiveDirectory
+<span class="kw">#Requires</span> -Version 5.1
+
+<span class="fn">Set-StrictMode</span> -Version Latest
+<span class="vr">$ErrorActionPreference</span> = <span class="str">'Stop'</span>
+
+<span class="kw">param</span>(
+    [<span class="tp">int</span>]    <span class="vr">$InactiveDays</span> = <span class="num">90</span>,
+    [<span class="tp">string</span>] <span class="vr">$OutputFolder</span> = <span class="str">'C:\Audit_Reports'</span>,
+    [<span class="tp">switch</span>] <span class="vr">$PassThru</span>
+)
+
+<span class="cm"># Prepara diret&#243;rio de sa&#237;da</span>
+<span class="kw">if</span> (-not (<span class="fn">Test-Path</span> -Path <span class="vr">$OutputFolder</span> -PathType Container)) {
+    <span class="fn">New-Item</span> -Path <span class="vr">$OutputFolder</span> -ItemType Directory -Force | <span class="fn">Out-Null</span>
+}
+<span class="vr">$ReportPath</span> = <span class="fn">Join-Path</span> <span class="vr">$OutputFolder</span> <span class="str">"Relatorio_IAM_$(</span><span class="fn">Get-Date</span><span class="str"> -Format 'yyyyMMdd_HHmm').txt"</span>
+
+<span class="kw">try</span> {
+    <span class="cm"># 1. PasswordNeverExpires via LDAPFilter (port&#225;vel entre vers&#245;es RSAT)
+    #    FIX: -Filter com aspas simples N&#195;O expande vari&#225;veis PowerShell
+    #    Bit 0x10000 de userAccountControl = ADS_UF_DONT_EXPIRE_PASSWD</span>
+    <span class="vr">$PassNeverExpires</span> = <span class="fn">Get-ADUser</span> `
+        -LDAPFilter <span class="str">'(&amp;(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=65536)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))'</span> `
+        -Properties PasswordLastSet |
+        <span class="fn">Select-Object</span> Name, SamAccountName, PasswordLastSet
+
+    <span class="cm"># 2. Contas inativas usando lastLogonTimestamp (replicado entre DCs)
+    #    FIX: LastLogonDate &#233; alias local — no filtro AD usa-se FileTime</span>
+    <span class="vr">$ThresholdFT</span> = (<span class="fn">Get-Date</span>).AddDays(-<span class="vr">$InactiveDays</span>).ToFileTime()
+    <span class="vr">$InactiveUsers</span> = <span class="fn">Get-ADUser</span> `
+        -LDAPFilter <span class="str">"(&amp;(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(lastLogonTimestamp&lt;=<span class="vr">$ThresholdFT</span>))"</span> `
+        -Properties lastLogonTimestamp, Department |
+        <span class="fn">Select-Object</span> Name, SamAccountName, Department,
+            @{ Name=<span class="str">'UltimoLogon'</span>; Expression={
+                <span class="kw">if</span> (<span class="vr">$_</span>.lastLogonTimestamp) {
+                    [<span class="tp">DateTime</span>]::FromFileTime(<span class="vr">$_</span>.lastLogonTimestamp)
+                } <span class="kw">else</span> { <span class="str">'Nunca'</span> }
+            }}
+
+    <span class="cm"># 3. Domain Admins com -Recursive
+    #    FIX: sem -Recursive, grupos aninhados ficam invis&#237;veis na auditoria</span>
+    <span class="vr">$DomainAdmins</span> = <span class="fn">Get-ADGroupMember</span> -Identity <span class="str">'Domain Admins'</span> -Recursive |
+        <span class="fn">Where-Object</span> { <span class="vr">$_</span>.objectClass -eq <span class="str">'user'</span> } |
+        <span class="fn">Get-ADUser</span> -Properties Title, LastLogonDate |
+        <span class="fn">Select-Object</span> Name, SamAccountName, Title,
+            @{ Name=<span class="str">'UltimoLogon'</span>; Expression={
+                <span class="kw">if</span> (<span class="vr">$_</span>.LastLogonDate) { <span class="vr">$_</span>.LastLogonDate } <span class="kw">else</span> { <span class="str">'Nunca'</span> }
+            }}
+
+    <span class="cm"># Monta relat&#243;rio</span>
+    <span class="vr">$sep</span> = <span class="str">'='</span> * <span class="num">53</span>
+    <span class="vr">$R</span>   = [<span class="tp">System.Text.StringBuilder</span>]::new()
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"$sep`nRELAT&#211;RIO DE AUDITORIA IAM`nGerado : $(Get-Date -Format 'dd/MM/yyyy HH:mm')`nAnalista: Vinicius Oliveira Lima`n$sep"</span>)
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"`n[CR&#205;TICO T1078] CONTAS COM SENHA PERMANENTE ($($PassNeverExpires.Count))"</span>)
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine((<span class="vr">$PassNeverExpires</span> | <span class="fn">Format-Table</span> -AutoSize | <span class="fn">Out-String</span>))
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"`n[M&#201;DIO T1078] CONTAS INATIVAS &gt;$InactiveDays DIAS ($($InactiveUsers.Count))"</span>)
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine((<span class="vr">$InactiveUsers</span> | <span class="fn">Format-Table</span> -AutoSize | <span class="fn">Out-String</span>))
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"`n[CONTROLE] DOMAIN ADMINS DIRETOS + ANINHADOS ($($DomainAdmins.Count))"</span>)
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine((<span class="vr">$DomainAdmins</span> | <span class="fn">Format-Table</span> -AutoSize | <span class="fn">Out-String</span>))
+
+    <span class="fn">Set-Content</span> -Path <span class="vr">$ReportPath</span> -Value <span class="vr">$R</span>.ToString() -Encoding UTF8
+
+    <span class="cm"># Hash SHA-256 para integridade do relat&#243;rio</span>
+    <span class="vr">$Hash</span> = (<span class="fn">Get-FileHash</span> -Path <span class="vr">$ReportPath</span> -Algorithm SHA256).Hash
+    <span class="fn">Add-Content</span> -Path <span class="vr">$ReportPath</span> -Value <span class="str">"`nSHA-256: $Hash"</span> -Encoding UTF8
+
+    <span class="fn">Write-Host</span> <span class="str">"[OK] Relat&#243;rio: $ReportPath"</span> -ForegroundColor Green
+    <span class="fn">Write-Host</span> <span class="str">"[OK] SHA-256  : $Hash"</span>         -ForegroundColor DarkGreen
+    <span class="kw">if</span> (<span class="vr">$PassThru</span>) { <span class="fn">Get-Content</span> <span class="vr">$ReportPath</span> | <span class="fn">Write-Host</span> }
+
+} <span class="kw">catch</span> {
+    <span class="fn">Write-Error</span> <span class="str">"Erro: $($_.Exception.Message)"</span>
+    <span class="kw">exit</span> <span class="num">1</span>
+}</pre></div>
+        </div>
+
+        <!-- SCRIPT — HARDENING -->
+        <p class="sub-heading">Hardening &#8212; Registro e Protocolos</p>
+        <div class="code-wrap">
+            <div class="code-header">
+                <div class="code-dots" aria-hidden="true">
+                    <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+                </div>
+                <span class="code-filename">Invoke-ADHardening.ps1</span>
+                <span class="code-lang">PowerShell</span>
+            </div>
+            <div class="code-body"><pre><span class="cm"># Desativar LLMNR &#8212; previne poisoning (T1557.001)</span>
+<span class="vr">$llmnrPath</span> = <span class="str">'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient'</span>
+<span class="fn">New-Item</span>         -Path <span class="vr">$llmnrPath</span> -Force | <span class="fn">Out-Null</span>
+<span class="fn">Set-ItemProperty</span> -Path <span class="vr">$llmnrPath</span> -Name EnableMulticast -Value <span class="num">0</span>
+
+<span class="cm"># Desativar SMBv1 &#8212; previne EternalBlue / WannaCry</span>
+<span class="fn">Set-SmbServerConfiguration</span> -EnableSMB1Protocol <span class="vr">$false</span> -Force
+<span class="fn">Disable-WindowsOptionalFeature</span> -Online -FeatureName SMB1Protocol -NoRestart
+
+<span class="cm"># Restringir NTLM &#8212; mitiga Pass-the-Hash (T1550.002)
+# Valor 5 = NTLMv2 apenas; rejeita LM e NTLMv1</span>
+<span class="vr">$lsaPath</span> = <span class="str">'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa'</span>
+<span class="fn">Set-ItemProperty</span> -Path <span class="vr">$lsaPath</span> -Name LmCompatibilityLevel -Value <span class="num">5</span>
+
+<span class="cm"># Auditoria avan&#231;ada de logon</span>
+auditpol /set /subcategory:<span class="str">"Logon"</span>                           /success:enable /failure:enable
+auditpol /set /subcategory:<span class="str">"Credential Validation"</span>           /success:enable /failure:enable
+auditpol /set /subcategory:<span class="str">"Kerberos Authentication Service"</span> /failure:enable</pre></div>
+        </div>
+
+        <!-- IGA LIFECYCLE -->
+        <p class="sub-heading">IGA &#8212; Ciclo de Vida de Identidades</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#129001; Joiner</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--green);">PROVISIONING</span>
+                </div>
+                <p>Cria&#231;&#227;o de conta com grupo m&#237;nimo necess&#225;rio (RBAC). MFA obrigat&#243;rio desde o primeiro acesso. Conta alocada na OU correta, sem privil&#233;gio administrativo padr&#227;o.</p>
+                <div class="card-tags">
+                    <span class="tag tag-green">Least Privilege</span>
+                    <span class="tag tag-cyan">MFA</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#128993; Mover</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--yellow);">ACCESS REVIEW</span>
+                </div>
+                <p>Ao mudar de fun&#231;&#227;o, revis&#227;o imediata de grupos e acessos. Remo&#231;&#227;o de permiss&#245;es anteriores &#8212; evita ac&#250;mulo de privil&#233;gios (<em>privilege creep</em>). Aprova&#231;&#227;o do gestor registrada.</p>
+                <div class="card-tags">
+                    <span class="tag tag-yellow">Access Review</span>
+                    <span class="tag tag-blue">SoD</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#128308; Leaver</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--red);">DEPROVISIONING</span>
+                </div>
+                <p>Desativa&#231;&#227;o imediata ao desligamento (T0). Sess&#245;es encerradas, senha randomizada, conta movida para OU de quarentena. Exclus&#227;o ap&#243;s 30 dias com log audit&#225;vel (LGPD Art.&nbsp;6&#176;).</p>
+                <div class="card-tags">
+                    <span class="tag tag-red">LGPD Art.6&#176;</span>
+                    <span class="tag tag-cyan">Auditoria</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div><!-- /.container -->
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <p>Vinicius Oliveira Lima &middot; Ribeir&#227;o Preto, SP &middot; Seguran&#231;a da Informa&#231;&#227;o</p>
+        <div class="footer-links">
+            <a href="https://www.linkedin.com/in/vini-lima-01/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/oliveiras1827"          target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // IntersectionObserver com fallback para browsers sem suporte
+    if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.fade-in').forEach(function(el) { io.observe(el); });
+    } else {
+        document.querySelectorAll('.fade-in').forEach(function(el) {
+            el.classList.add('visible');
+        });
+    }
+</script>
+
+</body>
+</html>
