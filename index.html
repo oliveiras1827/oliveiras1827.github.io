@@ -458,6 +458,7 @@
             <li><a href="#projeto">projeto</a></li>
             <li><a href="#tecnico">t&#233;cnico</a></li>
             <li><a href="#auditoria">auditoria</a></li>
+            <li><a href="#malware">malware IR</a></li>
         </ul>
     </div>
 </nav>
@@ -1045,6 +1046,358 @@ auditpol /set /subcategory:<span class="str">"Kerberos Authentication Service"</
             <span class="tag tag-yellow">LGPD Art. 6&#176;</span>
             <span class="tag tag-yellow">ISO 27001 A.9</span>
             <span class="tag tag-red">MITRE T1078</span>
+        </div>
+    </section>
+
+
+    <!-- ═══ 04 — MALWARE IR ═══ -->
+    <section id="malware" class="fade-in">
+        <div class="section-label">
+            <span class="num">04</span>
+            <h2>Projeto: An&#225;lise de Malware &amp; Incident Response</h2>
+        </div>
+
+        <!-- RESUMO EXECUTIVO -->
+        <div class="alert alert-blue">
+            <div class="alert-title">&#9658; RESUMO EXECUTIVO</div>
+            <p style="color:var(--text-dim);font-size:14px;margin:0;">
+                Simula&#231;&#227;o completa de um ciclo de <strong>Incident Response</strong> em ambiente SOC moderno,
+                cobrindo todas as fases: detec&#231;&#227;o autom&#225;tica no SIEM, triage, an&#225;lise est&#225;tica,
+                an&#225;lise comportamental via EDR, an&#225;lise de rede, mapeamento <strong>MITRE ATT&amp;CK</strong>,
+                contenção e melhoria de detecção. O incidente originou-se de um ataque de
+                phishing com anexo disfarçado de fatura (t&#233;cnica de dupla extens&#227;o)
+                entregando um <strong>Infostealer + Loader</strong> estilo RedLine/Lumma.
+            </p>
+        </div>
+
+        <!-- CENÁRIO DO INCIDENTE -->
+        <p class="sub-heading">Cen&#225;rio do Incidente</p>
+        <div class="alert alert-red">
+            <div class="alert-title">&#9888; VETOR INICIAL — PHISHING COM DUPLA EXTENS&#195;O</div>
+            <ul>
+                <li><strong>Arquivo malicioso:</strong> <code style="font-family:var(--mono);font-size:12px;color:var(--red);">invoice_april2026.pdf.exe</code> — nome projetado para enganar usuários que n&#227;o exibem extens&#245;es no Windows Explorer.</li>
+                <li><strong>Sintomas p&#243;s-infec&#231;&#227;o:</strong> lentid&#227;o significativa na esta&#231;&#227;o e atividade an&#244;mala de rede detectada pelo SIEM.</li>
+                <li><strong>Impacto potencial:</strong> roubo de credenciais armazenadas no browser, exfiltrac&#227;o de dados e instala&#231;&#227;o de payload secund&#225;rio via C2.</li>
+            </ul>
+        </div>
+
+        <!-- TIMELINE DO ATAQUE (visual) -->
+        <p class="sub-heading">Timeline do Ataque</p>
+        <div style="display:flex;flex-direction:column;gap:0;margin:8px 0 28px;border-left:2px solid var(--border2);padding-left:24px;">
+
+            <div style="position:relative;padding-bottom:24px;">
+                <div style="position:absolute;left:-31px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--red);border:2px solid var(--bg);box-shadow:0 0 8px var(--red);"></div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:0.08em;margin-bottom:4px;">FASE 1 — ENTREGA</div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:2px;">Phishing recebido</div>
+                <div style="font-size:13px;color:var(--text-dim);">E-mail com anexo <code style="font-family:var(--mono);font-size:11px;">invoice_april2026.pdf.exe</code>. Usu&#225;rio executa o arquivo acreditando ser uma fatura PDF.</div>
+            </div>
+
+            <div style="position:relative;padding-bottom:24px;">
+                <div style="position:absolute;left:-31px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--yellow);border:2px solid var(--bg);box-shadow:0 0 8px var(--yellow);"></div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--yellow);letter-spacing:0.08em;margin-bottom:4px;">FASE 2 — EXECU&#199;&#195;O</div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:2px;">PowerShell encoded spawned</div>
+                <div style="font-size:13px;color:var(--text-dim);">O execut&#225;vel lança <code style="font-family:var(--mono);font-size:11px;">powershell.exe</code> com comando codificado em Base64 a partir de <code style="font-family:var(--mono);font-size:11px;">explorer.exe</code> — indicador cl&#225;ssico de LOLBAS.</div>
+            </div>
+
+            <div style="position:relative;padding-bottom:24px;">
+                <div style="position:absolute;left:-31px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--yellow);border:2px solid var(--bg);box-shadow:0 0 8px var(--yellow);"></div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--yellow);letter-spacing:0.08em;margin-bottom:4px;">FASE 3 — PERSIST&#202;NCIA</div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:2px;">C&#243;pia para AppData + Run Key</div>
+                <div style="font-size:13px;color:var(--text-dim);">Malware se copia para <code style="font-family:var(--mono);font-size:11px;">AppData\Roaming\svchost.exe</code> e adiciona chave no registro <code style="font-family:var(--mono);font-size:11px;">HKCU\...\Run</code> para sobreviver ao reboot.</div>
+            </div>
+
+            <div style="position:relative;padding-bottom:24px;">
+                <div style="position:absolute;left:-31px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--purple);border:2px solid var(--bg);box-shadow:0 0 8px var(--purple);"></div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:0.08em;margin-bottom:4px;">FASE 4 — C2</div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:2px;">Beaconing para servidor C2</div>
+                <div style="font-size:13px;color:var(--text-dim);">Conex&#245;es HTTPS peri&#243;dicas para <code style="font-family:var(--mono);font-size:11px;">185.243.115.84:443</code>. Protocolo HTTPS usado para camuflar tr&#225;fego malicioso em inspec&#231;&#245;es superficiais.</div>
+            </div>
+
+            <div style="position:relative;">
+                <div style="position:absolute;left:-31px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 8px var(--green);"></div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.08em;margin-bottom:4px;">FASE 5 — CONTEN&#199;&#195;O</div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:2px;">Isolamento e erradica&#231;&#227;o</div>
+                <div style="font-size:13px;color:var(--text-dim);">Endpoint isolado via EDR. IP e dom&#237;nio bloqueados. Persist&#234;ncia removida. Credenciais resetadas. Scan completo executado.</div>
+            </div>
+        </div>
+
+        <!-- DETECÇÃO SIEM -->
+        <p class="sub-heading">Fase 1 &#8212; Detec&#231;&#227;o Inicial (SOC Tier 1 &#8212; SIEM)</p>
+        <div class="alert alert-green">
+            <div class="alert-title">&#10003; ALERTAS AUTOM&#193;TICOS GERADOS</div>
+            <ul>
+                <li>Execu&#231;&#227;o de arquivo com <strong>dupla extens&#227;o</strong> (.pdf.exe) — regra de baseline do SIEM.</li>
+                <li>Spawn de <strong>PowerShell a partir de explorer.exe</strong> com argumento <code style="font-family:var(--mono);font-size:12px;">-enc</code> (Base64 encoded).</li>
+                <li>Conex&#227;o externa para IP n&#227;o categorizado — detec&#231;&#227;o de beaconing por frequ&#234;ncia.</li>
+            </ul>
+        </div>
+
+        <!-- QUERIES SIEM -->
+        <p class="sub-heading">Queries de Detec&#231;&#227;o (prontas para produ&#231;&#227;o)</p>
+
+        <div class="code-wrap">
+            <div class="code-header">
+                <div class="code-dots" aria-hidden="true">
+                    <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+                </div>
+                <span class="code-filename">deteccao-powershell-encoded.spl</span>
+                <span class="code-lang">Splunk SPL</span>
+            </div>
+            <div class="code-body"><pre><span class="cm">&#47;&#42; Detecta PowerShell com argumento encoded (-enc) gerado por processo pai suspeito &#42;&#47;</span>
+index=windows source=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational
+EventCode=1
+CommandLine=<span class="str">"*-enc *"</span>
+| <span class="fn">stats</span> count <span class="kw">by</span> ProcessName, ParentProcessName, CommandLine
+| <span class="fn">where</span> ParentProcessName=<span class="str">"explorer.exe"</span>
+| <span class="fn">sort</span> -count</pre>
+            </div>
+        </div>
+
+        <div class="code-wrap">
+            <div class="code-header">
+                <div class="code-dots" aria-hidden="true">
+                    <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+                </div>
+                <span class="code-filename">deteccao-dupla-extensao.kql</span>
+                <span class="code-lang">KQL &#8212; Microsoft Sentinel</span>
+            </div>
+            <div class="code-body"><pre><span class="cm">&#47;&#42; Detecta execut&#225;veis com nome contendo extens&#227;o de documento (double-extension) &#42;&#47;</span>
+DeviceProcessEvents
+| <span class="kw">where</span> FileName <span class="fn">endswith</span> <span class="str">".exe"</span>
+    <span class="kw">and</span> (FileName <span class="fn">contains</span> <span class="str">".pdf"</span>
+      <span class="kw">or</span> FileName <span class="fn">contains</span> <span class="str">".docx"</span>
+      <span class="kw">or</span> FileName <span class="fn">contains</span> <span class="str">".xlsx"</span>)
+| <span class="kw">where</span> InitiatingProcessFileName <span class="fn">in</span> (<span class="str">"explorer.exe"</span>, <span class="str">"outlook.exe"</span>, <span class="str">"chrome.exe"</span>)
+| <span class="fn">project</span> Timestamp, DeviceName, FileName, ProcessCommandLine, InitiatingProcessFileName
+| <span class="fn">order by</span> Timestamp <span class="kw">desc</span></pre>
+            </div>
+        </div>
+
+        <!-- ANÁLISE ESTÁTICA -->
+        <p class="sub-heading">Fase 2 &#8212; An&#225;lise Est&#225;tica (PEStudio + Detect It Easy)</p>
+        <div class="card" style="margin-bottom:16px;">
+            <div class="card-header">
+                <h3>IOC &#8212; Hash do Arquivo</h3>
+                <span style="font-family:var(--mono);font-size:11px;color:var(--red);">MALICIOSO</span>
+            </div>
+            <p style="margin-bottom:12px;">Identifica&#231;&#227;o &#250;nica do execut&#225;vel malicioso para bloqueio em EDR, SIEM e plataformas de threat intel (VirusTotal, MISP).</p>
+            <div style="background:#0a0a12;border:1px solid var(--border2);border-radius:6px;padding:12px 16px;font-family:var(--mono);font-size:11px;color:var(--red);word-break:break-all;">
+                SHA-256: a4f8c9d2f6b9e9e3d7c8b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Strings Relevantes Encontradas</h3>
+                <span style="font-family:var(--mono);font-size:11px;color:var(--yellow);">SUSPEITO</span>
+            </div>
+            <p style="margin-bottom:12px;">Strings extra&#237;das com PEStudio confirmam comportamento de Loader: download de payload, persist&#234;ncia e execu&#231;&#227;o de shell.</p>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="background:#0a0a12;border:1px solid var(--border2);border-radius:4px;padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--yellow);">powershell</div>
+                <div style="background:#0a0a12;border:1px solid var(--border2);border-radius:4px;padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--yellow);">Invoke-WebRequest</div>
+                <div style="background:#0a0a12;border:1px solid var(--border2);border-radius:4px;padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--red);">AppData\Roaming\svchost.exe</div>
+                <div style="background:#0a0a12;border:1px solid var(--border2);border-radius:4px;padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--red);">http://malicious-server[.]com/payload2.bin</div>
+            </div>
+            <div class="card-tags" style="margin-top:14px;">
+                <span class="tag tag-red">PEStudio</span>
+                <span class="tag tag-yellow">Detect It Easy</span>
+                <span class="tag tag-purple">VirusTotal</span>
+            </div>
+        </div>
+
+        <!-- ANÁLISE COMPORTAMENTAL -->
+        <p class="sub-heading">Fase 3 &#8212; An&#225;lise Comportamental (EDR)</p>
+        <div class="alert alert-red">
+            <div class="alert-title">&#9888; ACHADOS DO EDR &#8212; COMPORTAMENTO EM RUNTIME</div>
+            <ul>
+                <li><strong>C&#243;pia para AppData:</strong> <code style="font-family:var(--mono);font-size:12px;">C:\Users\*\AppData\Roaming\svchost.exe</code> &#8212; mascaramento de nome como processo leg&#237;timo do Windows (T1036.005).</li>
+                <li><strong>Persist&#234;ncia via Run Key:</strong> <code style="font-family:var(--mono);font-size:12px;">HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code> &#8212; sobrevive ao reboot sem privil&#233;gio de administrador.</li>
+                <li><strong>PowerShell Base64:</strong> execu&#231;&#227;o de comando codificado para evadir inspec&#231;&#227;o de linha de comando por proxies e DLP.</li>
+            </ul>
+        </div>
+
+        <!-- ANÁLISE DE REDE -->
+        <p class="sub-heading">Fase 4 &#8212; An&#225;lise de Rede (Wireshark)</p>
+        <div class="card">
+            <div class="card-header">
+                <h3>IOC de Rede &#8212; C2 Beaconing</h3>
+                <span style="font-family:var(--mono);font-size:11px;color:var(--purple);">C2 ATIVO</span>
+            </div>
+            <p>Tr&#225;fego HTTPS peri&#243;dico detectado para IP externo. O uso de HTTPS (porta 443) dificulta inspe&#231;&#227;o sem SSL inspection ativa no proxy corporativo.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+                <div style="background:#0a0a12;border:1px solid rgba(168,85,247,0.3);border-radius:6px;padding:12px 14px;">
+                    <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-bottom:6px;letter-spacing:0.06em;">IP C2</div>
+                    <div style="font-family:var(--mono);font-size:13px;color:var(--purple);">185.243.115.84:443</div>
+                </div>
+                <div style="background:#0a0a12;border:1px solid rgba(168,85,247,0.3);border-radius:6px;padding:12px 14px;">
+                    <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-bottom:6px;letter-spacing:0.06em;">DOM&#205;NIO</div>
+                    <div style="font-family:var(--mono);font-size:13px;color:var(--purple);">malicious-server[.]com</div>
+                </div>
+            </div>
+            <div class="card-tags" style="margin-top:14px;">
+                <span class="tag tag-purple">Wireshark</span>
+                <span class="tag tag-red">Beaconing</span>
+                <span class="tag tag-blue">HTTPS C2</span>
+            </div>
+        </div>
+
+        <!-- MITRE ATT&CK -->
+        <p class="sub-heading">Mapeamento MITRE ATT&amp;CK</p>
+        <div class="matrix">
+            <div class="matrix-header">
+                <span>T&#193;TICA</span>
+                <span>SEVERIDADE</span>
+                <span>MITRE ID</span>
+                <span>EVID&#202;NCIA</span>
+            </div>
+            <div class="matrix-row">
+                <span>Execution &#8212; PowerShell</span>
+                <span><span class="severity sev-critical">CRITICAL</span></span>
+                <span class="mitre-id">T1059.001</span>
+                <span>Comando Base64 via explorer.exe</span>
+            </div>
+            <div class="matrix-row">
+                <span>Ingress Tool Transfer</span>
+                <span><span class="severity sev-high">HIGH</span></span>
+                <span class="mitre-id">T1105</span>
+                <span>Download de payload secund&#225;rio via PS</span>
+            </div>
+            <div class="matrix-row">
+                <span>Persistence &#8212; Run Keys</span>
+                <span><span class="severity sev-high">HIGH</span></span>
+                <span class="mitre-id">T1547.001</span>
+                <span>HKCU\Software\...\Run</span>
+            </div>
+            <div class="matrix-row">
+                <span>Masquerading &#8212; Nome</span>
+                <span><span class="severity sev-high">HIGH</span></span>
+                <span class="mitre-id">T1036.005</span>
+                <span>svchost.exe em AppData\Roaming</span>
+            </div>
+            <div class="matrix-row">
+                <span>C2 &#8212; Web Protocols</span>
+                <span><span class="severity sev-critical">CRITICAL</span></span>
+                <span class="mitre-id">T1071.001</span>
+                <span>Beaconing HTTPS para 185.243.115.84</span>
+            </div>
+        </div>
+
+        <!-- SIGMA RULE -->
+        <p class="sub-heading">Melhoria de Detec&#231;&#227;o &#8212; Sigma Rule (produ&#231;&#227;o)</p>
+        <div class="code-wrap">
+            <div class="code-header">
+                <div class="code-dots" aria-hidden="true">
+                    <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+                </div>
+                <span class="code-filename">powershell_double_extension_spawn.yml</span>
+                <span class="code-lang">Sigma</span>
+            </div>
+            <div class="code-body"><pre><span class="kw">title</span>: <span class="str">PowerShell Encoded Command via Double Extension Parent</span>
+<span class="kw">id</span>: <span class="str">d4e1f2a3-b5c6-7890-abcd-ef1234567890</span>
+<span class="kw">status</span>: <span class="str">production</span>
+<span class="kw">description</span>: <span class="str">Detecta execu&#231;&#227;o de PowerShell com argumento encoded (-enc)</span>
+<span class="kw">             </span><span class="str">originado de processo com dupla extens&#227;o no nome do arquivo pai.</span>
+<span class="kw">author</span>: <span class="str">Vinicius Oliveira Lima</span>
+<span class="kw">date</span>: <span class="str">2026-04-18</span>
+<span class="kw">references</span>:
+  - <span class="str">https://attack.mitre.org/techniques/T1059/001/</span>
+  - <span class="str">https://attack.mitre.org/techniques/T1036/005/</span>
+<span class="kw">logsource</span>:
+  <span class="kw">category</span>: <span class="str">process_creation</span>
+  <span class="kw">product</span>:  <span class="str">windows</span>
+<span class="kw">detection</span>:
+  <span class="kw">selection</span>:
+    <span class="kw">Image|endswith</span>:      <span class="str">'\powershell.exe'</span>
+    <span class="kw">CommandLine|contains</span>: <span class="str">'-enc'</span>
+    <span class="kw">ParentImage|endswith</span>: <span class="str">'\explorer.exe'</span>
+  <span class="kw">filter_legit</span>:
+    <span class="kw">ParentCommandLine|contains</span>:
+      - <span class="str">'C:\Windows\System32'</span>
+      - <span class="str">'C:\Program Files'</span>
+  <span class="kw">condition</span>: <span class="str">selection and not filter_legit</span>
+<span class="kw">falsepositives</span>:
+  - <span class="str">Scripts de administra&#231;&#227;o leg&#237;timos com -EncodedCommand</span>
+<span class="kw">level</span>: <span class="str">high</span>
+<span class="kw">tags</span>:
+  - <span class="str">attack.execution</span>
+  - <span class="str">attack.t1059.001</span>
+  - <span class="str">attack.defense_evasion</span>
+  - <span class="str">attack.t1036.005</span></pre>
+            </div>
+        </div>
+
+        <!-- RESPOSTA E LIÇÕES -->
+        <p class="sub-heading">Resposta ao Incidente &amp; Li&#231;&#245;es Aprendidas</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#128737; Conten&#231;&#227;o Imediata</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--red);">T0</span>
+                </div>
+                <p>Isolamento do endpoint via EDR. Bloqueio de IP e dom&#237;nio no firewall e DNS sinkhole. Remo&#231;&#227;o da Run Key e do bin&#225;rio em AppData. Reset de todas as credenciais do usu&#225;rio.</p>
+                <div class="card-tags">
+                    <span class="tag tag-red">EDR Isolation</span>
+                    <span class="tag tag-red">DNS Sinkhole</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#128270; Li&#231;&#245;es Aprendidas</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--yellow);">MELHORIA</span>
+                </div>
+                <p>Dupla extens&#227;o ainda engana usu&#225;rios com vis&#227;o de extens&#245;es desativada no Windows. Monitoramento de PowerShell encoded &#233; fundamental. Integra&#231;&#227;o SIEM + EDR reduz MTTD drasticamente.</p>
+                <div class="card-tags">
+                    <span class="tag tag-yellow">User Awareness</span>
+                    <span class="tag tag-yellow">MTTD</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#9881; Regras Criadas</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--green);">DETEC&#199;&#195;O</span>
+                </div>
+                <p>Sigma Rule para dupla extens&#227;o + PowerShell encoded. Regra de beaconing por frequ&#234;ncia no SIEM. Alerta de cria&#231;&#227;o de processo em AppData com nome de processo de sistema.</p>
+                <div class="card-tags">
+                    <span class="tag tag-green">Sigma</span>
+                    <span class="tag tag-green">SIEM Rules</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- IOC SUMMARY -->
+        <p class="sub-heading">IOCs Consolidados (Indicators of Compromise)</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:4px;">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;">
+                <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:10px;">ARQUIVO</div>
+                <div style="font-family:var(--mono);font-size:11px;color:var(--red);word-break:break-all;margin-bottom:6px;">SHA-256:<br>a4f8c9d2...b7a6f5e4</div>
+                <div style="font-family:var(--mono);font-size:11px;color:var(--yellow);">invoice_april2026.pdf.exe</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;">
+                <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:10px;">REDE</div>
+                <div style="font-family:var(--mono);font-size:11px;color:var(--purple);margin-bottom:6px;">185.243.115.84:443</div>
+                <div style="font-family:var(--mono);font-size:11px;color:var(--purple);">malicious-server[.]com</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;">
+                <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);letter-spacing:0.08em;margin-bottom:10px;">HOST</div>
+                <div style="font-family:var(--mono);font-size:11px;color:var(--yellow);word-break:break-all;margin-bottom:6px;">AppData\Roaming\svchost.exe</div>
+                <div style="font-family:var(--mono);font-size:11px;color:var(--yellow);word-break:break-all;">HKCU\...\CurrentVersion\Run</div>
+            </div>
+        </div>
+
+        <!-- STACK -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;">
+            <span class="tag tag-blue">Splunk SPL</span>
+            <span class="tag tag-blue">KQL &#8212; Sentinel</span>
+            <span class="tag tag-cyan">Sysmon</span>
+            <span class="tag tag-cyan">Wireshark</span>
+            <span class="tag tag-green">Sigma Rules</span>
+            <span class="tag tag-green">MITRE ATT&amp;CK</span>
+            <span class="tag tag-purple">PEStudio</span>
+            <span class="tag tag-purple">Detect It Easy</span>
+            <span class="tag tag-red">CrowdStrike Falcon</span>
+            <span class="tag tag-red">MS Defender for Endpoint</span>
+            <span class="tag tag-yellow">Incident Response</span>
+            <span class="tag tag-yellow">Threat Hunting</span>
         </div>
     </section>
 
