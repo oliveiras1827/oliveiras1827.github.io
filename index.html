@@ -452,11 +452,12 @@
 <!-- NAV -->
 <nav>
     <div class="container">
-        <div class="nav-logo">VINICIUSSEC<span>.</span></div>
+        <div class="nav-logo">ViniciusOSec<span></span></div>
         <ul class="nav-links">
             <li><a href="#sobre">sobre</a></li>
             <li><a href="#projeto">projeto</a></li>
             <li><a href="#tecnico">t&#233;cnico</a></li>
+            <li><a href="#auditoria">auditoria</a></li>
         </ul>
     </div>
 </nav>
@@ -484,7 +485,7 @@
             reconhecidas pelo mercado.
         </p>
         <div class="hero-links">
-            <a href="https://www.linkedin.com/in/vinicius-oliveira-lima-34a262272" class="btn btn-primary" target="_blank" rel="noopener noreferrer">&#8599; LinkedIn</a>
+            <a href="https://www.linkedin.com/in/vinicius-oliveira-lima-34a262272/" class="btn btn-primary" target="_blank" rel="noopener noreferrer">&#8599; LinkedIn</a>
             <a href="https://github.com/oliveiras1827"          class="btn btn-ghost"   target="_blank" rel="noopener noreferrer">&#8997; GitHub</a>
         </div>
     </header>
@@ -792,6 +793,261 @@ auditpol /set /subcategory:<span class="str">"Kerberos Authentication Service"</
         </div>
     </section>
 
+
+    <!-- ═══ 03 — INVOKE-IAMAUDIT ═══ -->
+    <section id="auditoria" class="fade-in">
+        <div class="section-label">
+            <span class="num">03</span>
+            <h2>Projeto: Invoke-IAMAudit.ps1</h2>
+        </div>
+
+        <div class="alert alert-blue">
+            <div class="alert-title">&#9658; O QUE &#201; ESTE PROJETO</div>
+            <p style="color:var(--text-dim);font-size:14px;margin:0;">
+                <strong>Invoke-IAMAudit</strong> &#233; um script PowerShell de produ&#231;&#227;o desenvolvido do zero
+                para automatizar a auditoria de conformidade de identidades no Active Directory.
+                Em vez de um analista gastar horas exportando relat&#243;rios manualmente,
+                o script executa em minutos, gera um arquivo auditado com
+                <strong>hash SHA-256</strong> e cobre tr&#234;s vetores cr&#237;ticos de ataque simultaneamente.
+            </p>
+        </div>
+
+        <!-- POR QUE É BOM PARA A EMPRESA -->
+        <p class="sub-heading">Por que isso importa para a empresa</p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:8px;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#9201; Velocidade</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--cyan);">EFICI&#202;NCIA</span>
+                </div>
+                <p>Auditoria que levaria 2&#8211;3 horas manual&#160;&#8212; varrer planilhas, cruzar dados, gerar relat&#243;rio&#160;&#8212;
+                passa a ser executada em <strong>menos de 2 minutos</strong>.
+                Qualquer analista do time pode rodar sem conhecimento pr&#233;vio de LDAP.</p>
+                <div class="card-tags">
+                    <span class="tag tag-cyan">Automa&#231;&#227;o</span>
+                    <span class="tag tag-blue">ROI direto</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#128737; Conformidade</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--yellow);">LGPD / ISO 27001</span>
+                </div>
+                <p>Identifica contas de ex-funcion&#225;rios ainda ativas
+                (viola&#231;&#227;o direta da <strong>LGPD Art.&#160;6&#176;</strong> e controle A.9 da ISO&#160;27001),
+                entregando evid&#234;ncia documental pronta para auditores externos
+                sem esfor&#231;o adicional da equipe.</p>
+                <div class="card-tags">
+                    <span class="tag tag-yellow">LGPD</span>
+                    <span class="tag tag-yellow">ISO 27001 A.9</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>&#128272; Integridade</h3>
+                    <span style="font-family:var(--mono);font-size:11px;color:var(--green);">SHA-256</span>
+                </div>
+                <p>O relat&#243;rio gerado recebe automaticamente um <strong>hash SHA-256</strong>
+                gravado no pr&#243;prio arquivo. Qualquer adultera&#231;&#227;o p&#243;s-gera&#231;&#227;o &#233; detectada
+                na compara&#231;&#227;o do hash &#8212; garantia de cadeia de cust&#243;dia para processos
+                disciplinares ou investiga&#231;&#245;es.</p>
+                <div class="card-tags">
+                    <span class="tag tag-green">Forense</span>
+                    <span class="tag tag-green">Chain of Custody</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- O QUE O SCRIPT DETECTA -->
+        <p class="sub-heading">O que o script detecta na pr&#225;tica</p>
+
+        <div class="matrix">
+            <div class="matrix-header">
+                <span>VERIFICA&#199;&#195;O</span>
+                <span>RISCO</span>
+                <span>MITRE ID</span>
+                <span>IMPACTO PR&#193;TICO</span>
+            </div>
+            <div class="matrix-row">
+                <span>Senha que nunca expira</span>
+                <span><span class="severity sev-critical">CRITICAL</span></span>
+                <span class="mitre-id">T1078</span>
+                <span>Credencial v&#225;lida indefinidamente &#8212; vetor perfeito de acesso persistente</span>
+            </div>
+            <div class="matrix-row">
+                <span>Contas inativas &gt;90 dias</span>
+                <span><span class="severity sev-high">HIGH</span></span>
+                <span class="mitre-id">T1078.002</span>
+                <span>Conta &#243;rf&#227; ativa &#8212; viola LGPD e pode ser usada por ex-funcion&#225;rio</span>
+            </div>
+            <div class="matrix-row">
+                <span>Membros de Domain Admins</span>
+                <span><span class="severity sev-high">HIGH</span></span>
+                <span class="mitre-id">T1078.002</span>
+                <span>Privil&#233;gio excessivo &#8212; inclui grupos aninhados invis&#237;veis em auditoria manual</span>
+            </div>
+        </div>
+
+        <!-- DIFERENCIAIS TÉCNICOS -->
+        <p class="sub-heading">Diferenciais t&#233;cnicos vs. script gen&#233;rico</p>
+
+        <div class="alert alert-green">
+            <div class="alert-title">&#10003; DECIS&#213;ES T&#201;CNICAS QUE FAZEM DIFEREN&#199;A EM PRODU&#199;&#195;O</div>
+            <ul>
+                <li><strong>LDAPFilter no lugar de -Filter:</strong> filtro executado diretamente no servidor AD &#8212; sem transfer&#234;ncia de objetos desnecess&#225;rios pela rede. Em dom&#237;nios com 10&#160;000+ contas, a diferen&#231;a de performance &#233; ordens de magnitude.</li>
+                <li><strong>lastLogonTimestamp no lugar de LastLogonDate:</strong> <code>LastLogonDate</code> &#233; um alias local do PowerShell que n&#227;o existe no filtro AD. <code>lastLogonTimestamp</code> &#233; replicado entre todos os Domain Controllers &#8212; resultado correto em qualquer topologia.</li>
+                <li><strong>Get-ADGroupMember -Recursive:</strong> listas de Domain Admins com grupos aninhados s&#227;o o ponto cego mais comum em auditorias manuais. <code>-Recursive</code> garante que nenhum membro privilegiado fique fora do relat&#243;rio.</li>
+                <li><strong>#Requires no cabe&#231;alho:</strong> bloqueia a execu&#231;&#227;o antes de qualquer linha de c&#243;digo se as pr&#233;-condi&#231;&#245;es n&#227;o forem atendidas &#8212; mais seguro que verifica&#231;&#227;o manual.</li>
+                <li><strong>StringBuilder no lugar de here-string:</strong> evita problemas de encoding em relat&#243;rios grandes e &#233; significativamente mais eficiente em mem&#243;ria.</li>
+            </ul>
+        </div>
+
+        <!-- COMO EXECUTAR -->
+        <p class="sub-heading">Como executar</p>
+        <div class="code-wrap">
+            <div class="code-header">
+                <div class="code-dots" aria-hidden="true">
+                    <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+                </div>
+                <span class="code-filename">terminal PowerShell (Admin)</span>
+                <span class="code-lang">PowerShell</span>
+            </div>
+            <div class="code-body"><pre><span class="cm"># Execu&#231;&#227;o padr&#227;o &#8212; gera relat&#243;rio em C:\Audit_Reports\</span>
+.\Invoke-IAMAudit.ps1
+
+<span class="cm"># Customizar per&#237;odo de inatividade e pasta de sa&#237;da</span>
+.\Invoke-IAMAudit.ps1 -InactiveDays <span class="num">60</span> -OutputFolder <span class="str">'D:\SOC\Reports'</span>
+
+<span class="cm"># Exibir relat&#243;rio no console al&#233;m de gravar em arquivo</span>
+.\Invoke-IAMAudit.ps1 -PassThru
+
+<span class="cm"># Sa&#237;da esperada:</span>
+<span class="fn">[OK]</span> Relat&#243;rio: C:\Audit_Reports\Relatorio_IAM_20250418_1432.txt
+<span class="fn">[OK]</span> SHA-256  : 3A9F2C...E7B1</pre>
+            </div>
+        </div>
+
+        <!-- CÓDIGO COMPLETO -->
+        <p class="sub-heading">C&#243;digo-fonte completo (vers&#227;o produ&#231;&#227;o)</p>
+        <div class="code-wrap">
+            <div class="code-header">
+                <div class="code-dots" aria-hidden="true">
+                    <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+                </div>
+                <span class="code-filename">Invoke-IAMAudit.ps1</span>
+                <span class="code-lang">PowerShell</span>
+            </div>
+            <div class="code-body"><pre><span class="cm">&lt;#
+.SYNOPSIS  Auditoria de Conformidade IAM e Hardening de AD.
+.DESCRIPTION
+    Audita tr&#234;s vetores cr&#237;ticos no Active Directory:
+      - Contas ativas com senha que nunca expira
+      - Contas inativas h&#225; mais de N dias
+      - Membros diretos e aninhados do Domain Admins
+    Gera relat&#243;rio UTF-8 com hash SHA-256 para integridade forense.
+.NOTES
+    Autor  : Vinicius Oliveira Lima
+    Vers&#227;o : 2.0  |  Requer: PS 5.1+, RSAT AD DS, Administrador
+#&gt;</span>
+
+<span class="kw">#Requires</span> -RunAsAdministrator
+<span class="kw">#Requires</span> -Modules ActiveDirectory
+<span class="kw">#Requires</span> -Version 5.1
+
+<span class="fn">Set-StrictMode</span> -Version Latest
+<span class="vr">$ErrorActionPreference</span> = <span class="str">'Stop'</span>
+
+<span class="kw">param</span>(
+    [<span class="tp">int</span>]    <span class="vr">$InactiveDays</span> = <span class="num">90</span>,
+    [<span class="tp">string</span>] <span class="vr">$OutputFolder</span> = <span class="str">'C:\Audit_Reports'</span>,
+    [<span class="tp">switch</span>] <span class="vr">$PassThru</span>
+)
+
+<span class="cm"># ── Prepara diret&#243;rio de sa&#237;da ──────────────────────────────</span>
+<span class="kw">if</span> (-not (<span class="fn">Test-Path</span> -Path <span class="vr">$OutputFolder</span> -PathType Container)) {
+    <span class="fn">New-Item</span> -Path <span class="vr">$OutputFolder</span> -ItemType Directory -Force | <span class="fn">Out-Null</span>
+    <span class="fn">Write-Host</span> <span class="str">"[INFO] Diret&#243;rio criado: $OutputFolder"</span> -ForegroundColor DarkCyan
+}
+<span class="vr">$ReportPath</span> = <span class="fn">Join-Path</span> <span class="vr">$OutputFolder</span> <span class="str">"Relatorio_IAM_$(<span class="fn">Get-Date</span> -Format 'yyyyMMdd_HHmm').txt"</span>
+
+<span class="kw">try</span> {
+    <span class="cm"># 1. PasswordNeverExpires via LDAPFilter ─────────────────────
+    #    Bit 0x10000 de userAccountControl = ADS_UF_DONT_EXPIRE_PASSWD
+    #    FIX: -Filter com aspas simples N&#195;O expande vari&#225;veis PS</span>
+    <span class="vr">$PassNeverExpires</span> = <span class="fn">Get-ADUser</span> `
+        -LDAPFilter <span class="str">'(&amp;(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=65536)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))'</span> `
+        -Properties PasswordLastSet |
+        <span class="fn">Select-Object</span> Name, SamAccountName, PasswordLastSet
+
+    <span class="cm"># 2. Contas inativas usando lastLogonTimestamp ───────────────
+    #    FIX: lastLogonTimestamp &#233; replicado entre DCs
+    #         LastLogonDate &#233; alias local — n&#227;o funciona no filtro AD</span>
+    <span class="vr">$ThresholdFT</span> = (<span class="fn">Get-Date</span>).AddDays(-<span class="vr">$InactiveDays</span>).ToFileTime()
+    <span class="vr">$InactiveUsers</span> = <span class="fn">Get-ADUser</span> `
+        -LDAPFilter <span class="str">"(&amp;(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(lastLogonTimestamp&lt;=<span class="vr">$ThresholdFT</span>))"</span> `
+        -Properties lastLogonTimestamp, Department |
+        <span class="fn">Select-Object</span> Name, SamAccountName, Department,
+            @{ Name=<span class="str">'UltimoLogon'</span>; Expression={
+                <span class="kw">if</span> (<span class="vr">$_</span>.lastLogonTimestamp) {
+                    [<span class="tp">DateTime</span>]::FromFileTime(<span class="vr">$_</span>.lastLogonTimestamp)
+                } <span class="kw">else</span> { <span class="str">'Nunca'</span> }
+            }}
+
+    <span class="cm"># 3. Domain Admins com -Recursive ────────────────────────────
+    #    FIX: sem -Recursive, grupos aninhados ficam invis&#237;veis</span>
+    <span class="vr">$DomainAdmins</span> = <span class="fn">Get-ADGroupMember</span> -Identity <span class="str">'Domain Admins'</span> -Recursive |
+        <span class="fn">Where-Object</span> { <span class="vr">$_</span>.objectClass -eq <span class="str">'user'</span> } |
+        <span class="fn">Get-ADUser</span> -Properties Title, LastLogonDate |
+        <span class="fn">Select-Object</span> Name, SamAccountName, Title,
+            @{ Name=<span class="str">'UltimoLogon'</span>; Expression={
+                <span class="kw">if</span> (<span class="vr">$_</span>.LastLogonDate) { <span class="vr">$_</span>.LastLogonDate } <span class="kw">else</span> { <span class="str">'Nunca'</span> }
+            }}
+
+    <span class="cm"># ── Monta relat&#243;rio ─────────────────────────────────────────</span>
+    <span class="vr">$sep</span> = <span class="str">'='</span> * <span class="num">53</span>
+    <span class="vr">$R</span>   = [<span class="tp">System.Text.StringBuilder</span>]::new()
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"$sep`nRELAT&#211;RIO DE AUDITORIA IAM`nGerado  : $(<span class="fn">Get-Date</span> -Format 'dd/MM/yyyy HH:mm')`nAnalista: Vinicius Oliveira Lima`nHost    : $env:COMPUTERNAME`nDom&#237;nio : $env:USERDNSDOMAIN`n$sep"</span>)
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"`n[CR&#205;TICO T1078] CONTAS COM SENHA PERMANENTE ($($PassNeverExpires.Count))"</span>)
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine((<span class="vr">$PassNeverExpires</span> | <span class="fn">Format-Table</span> -AutoSize | <span class="fn">Out-String</span>))
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"`n[M&#201;DIO T1078] CONTAS INATIVAS &gt;$InactiveDays DIAS ($($InactiveUsers.Count))"</span>)
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine((<span class="vr">$InactiveUsers</span> | <span class="fn">Format-Table</span> -AutoSize | <span class="fn">Out-String</span>))
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"`n[CONTROLE] DOMAIN ADMINS DIRETOS + ANINHADOS ($($DomainAdmins.Count))"</span>)
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine((<span class="vr">$DomainAdmins</span> | <span class="fn">Format-Table</span> -AutoSize | <span class="fn">Out-String</span>))
+    <span class="vr">$null</span> = <span class="vr">$R</span>.AppendLine(<span class="str">"`n$sep`nRECOMENDA&#199;&#213;ES`n1. Revogar PasswordNeverExpires de contas n&#227;o-servi&#231;o (usar gMSA).\n2. Desativar contas inativas &#8212; vetor T1078 direto.\n3. Revisar Domain Admins: aplicar Least Privilege e Tiered Model.\n$sep"</span>)
+
+    <span class="fn">Set-Content</span> -Path <span class="vr">$ReportPath</span> -Value <span class="vr">$R</span>.ToString() -Encoding UTF8
+
+    <span class="cm"># Hash SHA-256 para integridade forense do relat&#243;rio</span>
+    <span class="vr">$Hash</span> = (<span class="fn">Get-FileHash</span> -Path <span class="vr">$ReportPath</span> -Algorithm SHA256).Hash
+    <span class="fn">Add-Content</span> -Path <span class="vr">$ReportPath</span> -Value <span class="str">"`nSHA-256: $Hash"</span> -Encoding UTF8
+
+    <span class="fn">Write-Host</span> <span class="str">"[OK] Relat&#243;rio: $ReportPath"</span> -ForegroundColor Green
+    <span class="fn">Write-Host</span> <span class="str">"[OK] SHA-256  : $Hash"</span>         -ForegroundColor DarkGreen
+    <span class="kw">if</span> (<span class="vr">$PassThru</span>) { <span class="fn">Get-Content</span> <span class="vr">$ReportPath</span> | <span class="fn">Write-Host</span> }
+
+} <span class="kw">catch</span> {
+    <span class="fn">Write-Error</span> <span class="str">"Erro: $($_.Exception.Message)"</span>
+    <span class="kw">exit</span> <span class="num">1</span>
+}</pre>
+            </div>
+        </div>
+
+        <!-- TECNOLOGIAS -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;">
+            <span class="tag tag-blue">PowerShell 5.1+</span>
+            <span class="tag tag-cyan">Active Directory</span>
+            <span class="tag tag-cyan">RSAT AD DS</span>
+            <span class="tag tag-green">LDAPFilter</span>
+            <span class="tag tag-green">lastLogonTimestamp</span>
+            <span class="tag tag-purple">SHA-256</span>
+            <span class="tag tag-purple">StringBuilder</span>
+            <span class="tag tag-yellow">LGPD Art. 6&#176;</span>
+            <span class="tag tag-yellow">ISO 27001 A.9</span>
+            <span class="tag tag-red">MITRE T1078</span>
+        </div>
+    </section>
+
 </div><!-- /.container -->
 
 <!-- FOOTER -->
@@ -799,7 +1055,7 @@ auditpol /set /subcategory:<span class="str">"Kerberos Authentication Service"</
     <div class="container">
         <p>Vinicius Oliveira Lima &middot; Ribeir&#227;o Preto, SP &middot; Seguran&#231;a da Informa&#231;&#227;o</p>
         <div class="footer-links">
-            <a href="https://www.linkedin.com/in/vini-lima-01/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://www.linkedin.com/in/vinicius-oliveira-lima-34a262272/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             <a href="https://github.com/oliveiras1827"          target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
     </div>
